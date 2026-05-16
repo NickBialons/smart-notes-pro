@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Notes Pro — Авторизация</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="top-actions login-top-actions">
+    <button class="circle-action" id="themeToggle" type="button" title="Сменить тему">🌙</button>
+  </div>
+
+  <main class="login-page">
+    <section class="login-card card glass">
+      <div class="login-copy">
+        <p class="eyebrow">SMART NOTES PRO</p>
+        <h1>Авторизация</h1>
+        <p class="login-text">
+          Войди в свой аккаунт, чтобы работать с заметками, сохранять их в облаке
+          и пользоваться интеллектуальным анализом текста.
+        </p>
+
+        <div class="login-features">
+          <div class="login-feature">
+            <span class="login-feature-dot"></span>
+            <div>
+              <strong>Облачные заметки</strong>
+              <p>Все записи могут храниться в Firebase Firestore.</p>
+            </div>
+          </div>
+
+          <div class="login-feature">
+            <span class="login-feature-dot"></span>
+            <div>
+              <strong>Персональная среда</strong>
+              <p>После входа доступны сохранение, редактирование и синхронизация заметок.</p>
+            </div>
+          </div>
+
+          <div class="login-feature">
+            <span class="login-feature-dot"></span>
+            <div>
+              <strong>Умный анализ</strong>
+              <p>Ключевые слова, автотеги, поиск похожих заметок и краткое резюме.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-form-wrap">
+        <div class="login-form-head">
+          <h2>Авторизация</h2>
+        </div>
+
+        <label class="field-label" for="email">Email</label>
+        <input type="email" id="email" placeholder="example@gmail.com" />
+
+        <label class="field-label" for="password">Пароль</label>
+        <input type="password" id="password" placeholder="Введите пароль" />
+
+        <div class="login-actions">
+          <button class="btn btn-primary login-main-btn" id="loginBtn" type="button">Войти</button>
+          <button class="btn btn-secondary" id="registerBtn" type="button">Регистрация</button>
+          <button class="btn btn-secondary" id="guestModeBtn" type="button">Гостевой режим</button>
+        </div>
+
+        <div class="login-message-box" id="messageBox">
+          <p class="helper" id="gateMessage">Войдите или откройте локально как гость.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

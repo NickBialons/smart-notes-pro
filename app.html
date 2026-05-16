@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Notes Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="top-actions">
+    <button class="circle-action" id="logoutTopBtn" type="button" title="Выйти">
+      <svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        <polyline points="16 17 21 12 16 7" />
+        <line x1="21" y1="12" x2="9" y2="12" />
+      </svg>
+    </button>
+    <button class="circle-action" id="themeToggle" type="button" title="Сменить тему">🌙</button>
+  </div>
+
+  <main class="app-shell">
+    <section class="hero card glass">
+      <div>
+        <p class="eyebrow">SMART NOTES PRO</p>
+        <h1>Интеллектуальная заметка</h1>
+      </div>
+
+      <div class="hero-stats">
+        <div class="mini-stat">
+          <span>Заметок</span>
+          <strong id="totalNotes">0</strong>
+        </div>
+        <div class="mini-stat">
+          <span>Слов всего</span>
+          <strong id="totalWords">0</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <!-- Левая колонка: редактор -->
+      <div class="editor-column">
+        <div class="card editor-card">
+          <div class="section-head">
+            <h2>Редактор заметки</h2>
+            <span class="status-dot"></span>
+          </div>
+
+          <input type="hidden" id="editId" />
+
+          <label class="field-label" for="title">Название</label>
+          <input type="text" id="title" placeholder="Например: План главы 2" />
+
+          <label class="field-label" for="content">Текст заметки</label>
+          <textarea id="content" placeholder="Введите текст заметки..."></textarea>
+
+          <div class="two-columns form-gap">
+            <div>
+              <label class="field-label" for="priority">Приоритет</label>
+              <select id="priority">
+                <option value="Низкий">Низкий</option>
+                <option value="Средний">Средний</option>
+                <option value="Высокий">Высокий</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="manualTags">Свои теги</label>
+              <input type="text" id="manualTags" placeholder="через запятую" />
+            </div>
+          </div>
+
+          <div class="action-row editor-actions">
+            <button class="btn btn-primary" id="saveBtn" type="button">Сохранить</button>
+            <button class="btn btn-secondary" id="clearBtn" type="button">Очистить</button>
+          </div>
+
+          <div class="live-stats spaced-box" id="liveStats"></div>
+        </div>
+
+        <div class="card analysis-card">
+          <div class="section-head">
+            <h2>Интеллектуальный анализ</h2>
+          </div>
+          <div id="analysisResult" class="analysis-grid"></div>
+        </div>
+      </div>
+
+      <!-- Правая колонка: инструменты + список -->
+      <div class="notes-column">
+        <div class="card tools-card">
+          <div class="section-head">
+            <h2>Фильтры, экспорт и поиск</h2>
+          </div>
+
+          <div class="toolbar-grid">
+            <input type="text" id="searchInput" placeholder="Поиск по заметкам" />
+
+            <select id="sortSelect">
+              <option value="new">Сначала новые</option>
+              <option value="old">Сначала старые</option>
+              <option value="priority">По приоритету</option>
+              <option value="words">По словам</option>
+            </select>
+
+            <select id="filterPriority">
+              <option value="Все">Все приоритеты</option>
+              <option value="Высокий">Высокий</option>
+              <option value="Средний">Средний</option>
+              <option value="Низкий">Низкий</option>
+            </select>
+          </div>
+
+          <div class="action-row export-row">
+            <button class="btn btn-secondary" id="exportJsonBtn" type="button">Экспорт JSON</button>
+            <button class="btn btn-secondary" id="exportTxtBtn" type="button">Экспорт TXT</button>
+            <button class="btn btn-danger" id="clearAllBtn" type="button">Удалить все</button>
+          </div>
+        </div>
+
+        <div class="notes-grid" id="notesGrid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Модалка удаления -->
+  <div class="modal-backdrop" id="confirmModal" hidden>
+    <div class="confirm-modal card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Подтверждение удаления</h3>
+      <p id="confirmText">Удалить заметку?</p>
+      <div class="confirm-actions">
+        <button class="btn btn-secondary" id="confirmCancelBtn" type="button">Отмена</button>
+        <button class="btn btn-danger" id="confirmOkBtn" type="button">Удалить</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
