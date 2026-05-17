@@ -481,7 +481,8 @@ function noteCard(note) {
         <span class="priority-badge ${getPriorityClass(note.priority)}">${escapeHtml(note.priority)}</span>
       </div>
 
-      <p class="note-preview">${escapeHtml(note.content)}</p>
+      <p class="note-preview" id="preview-${note.id}">${escapeHtml(note.content)}</p>
+      <button class="read-more-btn" onclick="togglePreview(${note.id}, this)">Читать далее ↓</button>
       <p class="note-meta"><strong>Резюме:</strong> ${escapeHtml(note.summary || '')}</p>
       <p class="note-stat-line">Слов: ${note.stats?.words || 0} · Символов: ${note.stats?.chars || 0}</p>
       ${(note.keywordList || []).length ? `
@@ -622,3 +623,9 @@ function editNote(id) {
 
 window.editNote = editNote;
 window.openDeleteNote = openDeleteNote;
+window.togglePreview = function(id, btn) {
+  const p = document.getElementById('preview-' + id);
+  if (!p) return;
+  const expanded = p.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Свернуть ↑' : 'Читать далее ↓';
+};
