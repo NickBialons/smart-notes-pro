@@ -137,10 +137,12 @@ function getAuthErrorMessage(error) {
 function setupAppPage() {
   protectAppPage();
 
-  ['#title', '#content', '#manualTags'].forEach((selector) =>
-    $(selector).addEventListener('input', updateLiveAnalysis)
-  );
-  $('#priority').addEventListener('change', updateLiveAnalysis);
+  ['#title', '#content', '#manualTags'].forEach((selector) => {
+    const el = $(selector);
+    if (el) el.addEventListener('input', updateLiveAnalysis);
+  });
+  const priorityEl = $('#priority');
+  if (priorityEl) priorityEl.addEventListener('change', updateLiveAnalysis);
 
   $('#saveBtn').onclick = saveNote;
   $('#clearBtn').onclick = clearForm;
@@ -446,14 +448,14 @@ function getCreatedAt(id) {
 
 function renderNotes() {
   const search = ($('#searchInput')?.value || '').toLowerCase().trim();
-  const priorityFilter = $('#filterPriority')?.value || 'все';
+  const priorityFilter = $('#filterPriority')?.value || 'Все';
   const sort = $('#sortSelect')?.value || 'new';
-  const rank = { high: 3, medium: 2, low: 1 };
+  const rank = { 'Высокий': 3, 'Средний': 2, 'Низкий': 1 };
 
   let filtered = notes.filter(note => {
     const haystack = `${note.title} ${note.content} ${(note.tags || []).join(' ')} ${note.summary || ''}`.toLowerCase();
     const matchesSearch = search ? haystack.includes(search) : true;
-    const matchesPriority = priorityFilter !== 'все' ? note.priority === priorityFilter : true;
+    const matchesPriority = priorityFilter !== 'Все' ? note.priority === priorityFilter : true;
     return matchesSearch && matchesPriority;
   });
 
@@ -542,7 +544,7 @@ function clearForm() {
     const el = $(selector);
     if (el) el.value = '';
   });
-  $('#priority').value = 'low';
+  $('#priority').value = 'Низкий';
   updateLiveAnalysis();
 }
 
@@ -580,9 +582,9 @@ function downloadFile(content, name, type) {
 
 function getPriorityClass(priority) {
   return {
-    high: 'priority-high',
-    medium: 'priority-medium',
-    low: 'priority-low'
+    'Высокий': 'priority-high',
+    'Средний': 'priority-medium',
+    'Низкий': 'priority-low'
   }[priority] || 'priority-low';
 }
 
