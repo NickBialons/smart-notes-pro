@@ -141,10 +141,10 @@ function setupAppPage() {
   protectAppPage();
 
   ['#title', '#content', '#manualTags'].forEach((selector) =>
-    $(selector).addEventListener('input', updateLiveAnalysis)
+    $(selector).addEventListener('input', () => updateLiveStats($('#content')?.value || ''))
   );
-  $('#priority').addEventListener('change', updateLiveAnalysis);
 
+  $('#analyzeBtn').onclick = runManualAnalysis;
   $('#saveBtn').onclick = saveNote;
   $('#clearBtn').onclick = clearForm;
   $('#exportJsonBtn').onclick = exportJson;
@@ -170,7 +170,7 @@ function setupAppPage() {
     location.href = 'login.html';
   };
 
-  updateLiveAnalysis();
+  setAnalysisIdle();
   renderNotes();
   updateDashboardStats();
 }
@@ -341,6 +341,71 @@ function buildAnalysis(text, manualTags) {
     keywords: lastAiResult.keywords || [],
     allTags: lastAiResult.allTags || []
   };
+}
+
+function setAnalysisIdle() {
+  const el = $('#analysisResult');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="analysis-box analysis-idle">
+      <p>Напиши заметку и нажми <strong>✨ Анализировать ИИ</strong>, чтобы получить резюме, ключевые слова и теги.</p>
+    </div>
+  `;
+  lastAiResult = { summary: '', keywords: [], allTags: [] };
+}
+
+async function runManualAnalysis() {
+  const text = $('#content')?.value || '';
+  const manualTags = $('#manualTags')?.value || '';
+
+  if (!text.trim() || text.trim().length < 20) {
+    $('#analysisResult').innerHTML = `
+      <div class="analysis-box">
+        <p>Текст слишком короткий. Напиши хотя бы пару предложений.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const btn = $('#analyzeBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Анализирую...';
+  setAnalysisLoading();
+
+  try {
+    const ai = await fetchAiAnalysis(text, manualTags);
+    const customTags = manualTags
+      ? manualTags.split(',').map(t => t.trim()).filter(Boolean)
+      : [];
+    const allTags = [...new Set([...(ai.tags || []), ...customTags])];
+
+    lastAiResult = { summary: ai.summary || '', keywords: ai.keywords || [], allTags };
+
+    $('#analysisResult').innerHTML = `
+      <div class="analysis-box">
+        <h3>Краткое резюме</h3>
+        <p>${escapeHtml(ai.summary || 'Нет результата')}</p>
+      </div>
+      <div class="analysis-box">
+        <h3>Ключевые слова</h3>
+        <p>${renderTags(ai.keywords || [], 'Нет ключевых слов')}</p>
+      </div>
+      <div class="analysis-box">
+        <h3>Автотеги</h3>
+        <p>${renderTags(allTags, 'Нет тегов')}</p>
+      </div>
+    `;
+  } catch {
+    $('#analysisResult').innerHTML = `
+      <div class="analysis-box" style="border-color:rgba(239,68,68,0.3)">
+        <h3>Ошибка AI</h3>
+        <p>Анализ временно недоступен, но заметку можно сохранить.</p>
+      </div>
+    `;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '✨ Анализировать ИИ';
+  }
 }
 
 async function updateLiveAnalysis() {
