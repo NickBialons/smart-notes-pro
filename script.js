@@ -37,7 +37,10 @@ const THEME_KEY = 'smart_notes_theme';
 const GUEST_KEY = 'guest_mode';
 
 const $ = (selector) => document.querySelector(selector);
-const isLoginPage = () => location.pathname.toLowerCase().includes('login');
+const isLoginPage = () =>
+  location.pathname === '/' ||
+  location.pathname.toLowerCase().includes('login') ||
+  !!document.querySelector('#loginBtn');
 
 const stopWords = new Set([
   'и','в','во','не','что','он','на','я','с','со','как','а','то','все','она','так','его','но','да','ты','к','у','же',
@@ -137,21 +140,19 @@ function getAuthErrorMessage(error) {
 function setupAppPage() {
   protectAppPage();
 
-  ['#title', '#content', '#manualTags'].forEach((selector) => {
-    const el = $(selector);
-    if (el) el.addEventListener('input', updateLiveAnalysis);
-  });
-  const priorityEl = $('#priority');
-  if (priorityEl) priorityEl.addEventListener('change', updateLiveAnalysis);
+  ['#title', '#content', '#manualTags'].forEach((selector) =>
+    $(selector).addEventListener('input', updateLiveAnalysis)
+  );
+  $('#priority').addEventListener('change', updateLiveAnalysis);
 
-  const saveBtn = $('#saveBtn'); if (saveBtn) saveBtn.onclick = saveNote;
-  const clearBtn = $('#clearBtn'); if (clearBtn) clearBtn.onclick = clearForm;
-  const exportJsonBtn = $('#exportJsonBtn'); if (exportJsonBtn) exportJsonBtn.onclick = exportJson;
-  const exportTxtBtn = $('#exportTxtBtn'); if (exportTxtBtn) exportTxtBtn.onclick = exportTxt;
+  $('#saveBtn').onclick = saveNote;
+  $('#clearBtn').onclick = clearForm;
+  $('#exportJsonBtn').onclick = exportJson;
+  $('#exportTxtBtn').onclick = exportTxt;
 
-  const searchInput = $('#searchInput'); if (searchInput) searchInput.addEventListener('input', renderNotes);
-  const sortSelect = $('#sortSelect'); if (sortSelect) sortSelect.onchange = renderNotes;
-  const filterPriority = $('#filterPriority'); if (filterPriority) filterPriority.onchange = renderNotes;
+  $('#searchInput').addEventListener('input', renderNotes);
+  $('#sortSelect').onchange = renderNotes;
+  $('#filterPriority').onchange = renderNotes;
 
   $('#clearAllBtn').onclick = () => {
     if (!notes.length) return;
@@ -448,14 +449,14 @@ function getCreatedAt(id) {
 
 function renderNotes() {
   const search = ($('#searchInput')?.value || '').toLowerCase().trim();
-  const priorityFilter = $('#filterPriority')?.value || 'Все';
+  const priorityFilter = $('#filterPriority')?.value || 'все';
   const sort = $('#sortSelect')?.value || 'new';
-  const rank = { 'Высокий': 3, 'Средний': 2, 'Низкий': 1 };
+  const rank = { high: 3, medium: 2, low: 1 };
 
   let filtered = notes.filter(note => {
     const haystack = `${note.title} ${note.content} ${(note.tags || []).join(' ')} ${note.summary || ''}`.toLowerCase();
     const matchesSearch = search ? haystack.includes(search) : true;
-    const matchesPriority = priorityFilter !== 'Все' ? note.priority === priorityFilter : true;
+    const matchesPriority = priorityFilter.toLowerCase() !== 'все' ? note.priority === priorityFilter : true;
     return matchesSearch && matchesPriority;
   });
 
