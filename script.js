@@ -541,7 +541,7 @@ function noteCard(note) {
       <div class="note-top">
         <div>
           <h3 class="note-title">${escapeHtml(note.title)}</h3>
-          <p class="note-meta">${escapeHtml(note.createdAt || '')}<br>${escapeHtml(note.updatedAt || '')}</p>
+          <p class="note-meta">${escapeHtml(note.createdAt || '')}</p>
         </div>
         <span class="priority-badge ${getPriorityClass(note.priority)}">${escapeHtml(note.priority)}</span>
       </div>
