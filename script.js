@@ -446,14 +446,14 @@ function getCreatedAt(id) {
 
 function renderNotes() {
   const search = ($('#searchInput')?.value || '').toLowerCase().trim();
-  const priorityFilter = $('#filterPriority')?.value || 'all';
+  const priorityFilter = $('#filterPriority')?.value || 'все';
   const sort = $('#sortSelect')?.value || 'new';
   const rank = { high: 3, medium: 2, low: 1 };
 
   let filtered = notes.filter(note => {
     const haystack = `${note.title} ${note.content} ${(note.tags || []).join(' ')} ${note.summary || ''}`.toLowerCase();
     const matchesSearch = search ? haystack.includes(search) : true;
-    const matchesPriority = priorityFilter !== 'all' ? note.priority === priorityFilter : true;
+    const matchesPriority = priorityFilter !== 'все' ? note.priority === priorityFilter : true;
     return matchesSearch && matchesPriority;
   });
 
