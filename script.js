@@ -484,7 +484,16 @@ function noteCard(note) {
       <p class="note-preview">${escapeHtml(note.content)}</p>
       <p class="note-meta"><strong>Резюме:</strong> ${escapeHtml(note.summary || '')}</p>
       <p class="note-stat-line">Слов: ${note.stats?.words || 0} · Символов: ${note.stats?.chars || 0}</p>
-      <div class="tags-wrap">${(note.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join(' ')}</div>
+      ${(note.keywordList || []).length ? `
+      <div class="note-meta-section">
+        <span class="note-section-label">🔑 Ключевые слова</span>
+        <div class="tags-wrap">${note.keywordList.map(k => `<span class="tag tag-keyword">${escapeHtml(k)}</span>`).join('')}</div>
+      </div>` : ''}
+      ${(note.tags || []).length ? `
+      <div class="note-meta-section">
+        <span class="note-section-label">🏷️ Теги</span>
+        <div class="tags-wrap">${note.tags.map(tag => `<span class="tag tag-autotag">${escapeHtml(tag)}</span>`).join('')}</div>
+      </div>` : ''}
 
       <div class="note-actions">
         <button class="btn btn-secondary" onclick="editNote(${note.id})">Редактировать</button>
