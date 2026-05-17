@@ -144,14 +144,14 @@ function setupAppPage() {
   const priorityEl = $('#priority');
   if (priorityEl) priorityEl.addEventListener('change', updateLiveAnalysis);
 
-  $('#saveBtn').onclick = saveNote;
-  $('#clearBtn').onclick = clearForm;
-  $('#exportJsonBtn').onclick = exportJson;
-  $('#exportTxtBtn').onclick = exportTxt;
+  const saveBtn = $('#saveBtn'); if (saveBtn) saveBtn.onclick = saveNote;
+  const clearBtn = $('#clearBtn'); if (clearBtn) clearBtn.onclick = clearForm;
+  const exportJsonBtn = $('#exportJsonBtn'); if (exportJsonBtn) exportJsonBtn.onclick = exportJson;
+  const exportTxtBtn = $('#exportTxtBtn'); if (exportTxtBtn) exportTxtBtn.onclick = exportTxt;
 
-  $('#searchInput').addEventListener('input', renderNotes);
-  $('#sortSelect').onchange = renderNotes;
-  $('#filterPriority').onchange = renderNotes;
+  const searchInput = $('#searchInput'); if (searchInput) searchInput.addEventListener('input', renderNotes);
+  const sortSelect = $('#sortSelect'); if (sortSelect) sortSelect.onchange = renderNotes;
+  const filterPriority = $('#filterPriority'); if (filterPriority) filterPriority.onchange = renderNotes;
 
   $('#clearAllBtn').onclick = () => {
     if (!notes.length) return;
