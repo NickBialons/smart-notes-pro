@@ -467,6 +467,11 @@ textarea {
 .note-title {
   font-size: 20px;
   line-height: 1.2;
+  min-height: 2.4em; /* reserve space for 2 lines so cards align */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
 .priority-badge {
@@ -663,6 +668,23 @@ textarea {
   display: none;
 }
 /* Note card: keywords & tags sections */
+
+/* Light mode: darker tag colors for readability */
+body.light .tag-keyword {
+  border-color: rgba(50, 90, 220, 0.35);
+  background: rgba(50, 90, 220, 0.08);
+  color: #2a4db5;
+}
+
+body.light .tag-autotag {
+  border-color: rgba(15, 130, 50, 0.35);
+  background: rgba(15, 130, 50, 0.08);
+  color: #0f7a30;
+}
+
+body.light .note-section-label {
+  color: #5d6b86;
+}
 .note-meta-section {
   display: flex;
   flex-direction: column;
