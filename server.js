@@ -124,7 +124,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  let filePath = req.url === '/' ? 'login.html' : req.url.slice(1);
+  let filePath = req.url === '/' ? 'index.html' : req.url.slice(1);
   filePath = path.join(__dirname, filePath);
 
   fs.readFile(filePath, (err, data) => {
