@@ -3,80 +3,70 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Smart Notes Pro — Авторизация</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+  <title>Smart Notes — Авторизация</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="top-actions login-top-actions">
-    <button class="circle-action" id="themeToggle" type="button" title="Сменить тему">🌙</button>
+<body class="page-login">
+
+  <div class="top-actions">
   </div>
 
-  <main class="login-page">
-    <section class="login-card card glass">
-      <div class="login-copy">
-        <p class="eyebrow">SMART NOTES PRO</p>
-        <h1>Авторизация</h1>
-        <p class="login-text">
-          Войди в свой аккаунт, чтобы работать с заметками, сохранять их в облаке
-          и пользоваться интеллектуальным анализом текста.
-        </p>
+  <div class="left">
+    <div class="logo-row">
+      <img class="logo-img" src="карт/log3.png" alt="Smart Notes Logo" />
+      <span class="logo-label">Smart Notes Pro</span>
+    </div>
 
-        <div class="login-features">
-          <div class="login-feature">
-            <span class="login-feature-dot"></span>
-            <div>
-              <strong>Облачные заметки</strong>
-              <p>Все записи могут храниться в Firebase Firestore.</p>
-            </div>
-          </div>
+    <h1>Авторизация</h1>
 
-          <div class="login-feature">
-            <span class="login-feature-dot"></span>
-            <div>
-              <strong>Персональная среда</strong>
-              <p>После входа доступны сохранение, редактирование и синхронизация заметок.</p>
-            </div>
-          </div>
+    <p class="tagline">Войди в аккаунт, чтобы работать с заметками и пользоваться интеллектуальным анализом.</p>
 
-          <div class="login-feature">
-            <span class="login-feature-dot"></span>
-            <div>
-              <strong>Умный анализ</strong>
-              <p>Ключевые слова, автотеги, поиск похожих заметок и краткое резюме.</p>
-            </div>
-          </div>
+    <div class="features">
+      <div class="feature">
+        <span class="feature-dot"></span>
+        <div>
+          <strong>Облачные заметки</strong>
+          <p>Все записи хранятся в Firebase Firestore.</p>
         </div>
       </div>
-
-      <div class="login-form-wrap">
-        <div class="login-form-head">
-          <h2>Авторизация</h2>
-        </div>
-
-        <label class="field-label" for="email">Email</label>
-        <input type="email" id="email" placeholder="example@gmail.com" />
-
-        <label class="field-label" for="password">Пароль</label>
-        <input type="password" id="password" placeholder="Введите пароль" />
-
-        <div class="login-actions">
-          <button class="btn btn-primary login-main-btn" id="loginBtn" type="button">Войти</button>
-          <button class="btn btn-secondary" id="registerBtn" type="button">Регистрация</button>
-          <button class="btn btn-secondary" id="guestModeBtn" type="button">Гостевой режим</button>
-        </div>
-
-        <div class="login-message-box" id="messageBox">
-          <p class="helper" id="gateMessage">Войдите или откройте локально как гость.</p>
+      <div class="feature">
+        <span class="feature-dot"></span>
+        <div>
+          <strong>Персональная среда</strong>
+          <p>Сохранение, редактирование и синхронизация.</p>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="feature">
+        <span class="feature-dot"></span>
+        <div>
+          <strong>Умный анализ</strong>
+          <p>Ключевые слова, автотеги и краткое резюме.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="form-card">
+      <h2>Войти в аккаунт</h2>
+
+      <label class="field-label" for="email">Email</label>
+      <input type="email" id="email" placeholder="example@gmail.com" />
+
+      <label class="field-label" for="password">Пароль</label>
+      <input type="password" id="password" placeholder="Введите пароль" />
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="loginBtn" type="button">Войти</button>
+        <button class="btn btn-secondary" id="registerBtn" type="button">Регистрация</button>
+      </div>
+      <button class="btn btn-ghost" id="guestModeBtn" type="button">Гостевой режим</button>
+
+      <div class="message-box" id="messageBox">
+        <p id="gateMessage">Войдите или откройте как гость.</p>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="script.js"></script>
 </body>
