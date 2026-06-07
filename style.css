@@ -1337,3 +1337,65 @@ body.light .custom-select-dropdown li:hover {
 ::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
+
+/* Notes grid - cards independent height */
+.notes-grid {
+  align-items: start;
+}
+
+/* Fix long words overflow */
+.note-preview,
+.note-card {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Fix dropdown z-index above cards */
+.tools-card {
+  position: relative;
+  z-index: 10;
+}
+
+/* Cards fully independent height in grid */
+.notes-grid {
+  grid-auto-rows: max-content;
+}
+
+/* Fix: make notes grid use masonry-like independent columns */
+.notes-grid {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.notes-grid .note-card {
+  flex: 1 1 290px;
+  max-width: calc(50% - 9px);
+}
+
+@media (max-width: 700px) {
+  .notes-grid .note-card {
+    max-width: 100%;
+  }
+}
+
+/* True independent columns for notes */
+.notes-grid {
+  display: block !important;
+  columns: 2;
+  column-gap: 18px;
+}
+
+.notes-grid .note-card {
+  break-inside: avoid;
+  display: block;
+  max-width: 100% !important;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 700px) {
+  .notes-grid {
+    columns: 1;
+  }
+}
