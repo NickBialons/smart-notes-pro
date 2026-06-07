@@ -360,10 +360,12 @@ function setAnalysisLoading() {
 }
 
 function setAnalysisEmpty() {
-  $('#analysisResult').innerHTML = `
-    <div class="analysis-box"><h3>Краткое резюме</h3><p>Нет текста для краткого описания.</p></div>
-    <div class="analysis-box"><h3>Ключевые слова</h3><p>Недостаточно текста.</p></div>
-    <div class="analysis-box"><h3>Автотеги</h3><p>Теги пока не найдены.</p></div>
+  const el = $('#analysisResult');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="analysis-box analysis-idle">
+      <p>Напиши заметку и нажми <strong>✨ Анализировать ИИ</strong>, чтобы получить резюме, ключевые слова и теги.</p>
+    </div>
   `;
 }
 
@@ -573,6 +575,7 @@ function renderNotes() {
   $('#notesGrid').innerHTML = filtered.length
     ? filtered.map(noteCard).join('')
     : `<div class="empty-state">Нет заметок</div>`;
+  requestAnimationFrame(initReadMoreBtns);
 }
 
 function noteCard(note) {
@@ -747,3 +750,10 @@ window.togglePreview = function(id, btn) {
   const expanded = p.classList.toggle('expanded');
   btn.textContent = expanded ? 'Свернуть ↑' : 'Читать далее ↓';
 };
+function initReadMoreBtns() {
+  document.querySelectorAll('.note-preview').forEach(p => {
+    const btn = p.nextElementSibling;
+    if (!btn || !btn.classList.contains('read-more-btn')) return;
+    btn.style.display = p.scrollHeight <= p.clientHeight + 2 ? 'none' : '';
+  });
+}
