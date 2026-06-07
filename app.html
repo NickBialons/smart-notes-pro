@@ -6,39 +6,29 @@
   <title>Smart Notes Pro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
   <div class="top-actions">
     <button class="circle-action" id="logoutTopBtn" type="button" title="Выйти">
-      <svg
-        viewBox="0 0 24 24"
-        width="22"
-        height="22"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-        <polyline points="16 17 21 12 16 7" />
-        <line x1="21" y1="12" x2="9" y2="12" />
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
       </svg>
     </button>
-    <button class="circle-action" id="themeToggle" type="button" title="Сменить тему">🌙</button>
   </div>
 
   <main class="app-shell">
     <section class="hero card glass">
-      <div>
-        <p class="eyebrow">SMART NOTES PRO</p>
-        <h1>Интеллектуальная заметка</h1>
+      <div class="hero-brand">
+        <img class="hero-logo" src="карт/log3.png" alt="Smart Notes" />
+        <div>
+          <p class="eyebrow">SMART NOTES PRO</p>
+          <h1>Интеллектуальная заметка</h1>
+        </div>
       </div>
 
       <div class="hero-stats">
@@ -65,7 +55,7 @@
           <input type="hidden" id="editId" />
 
           <label class="field-label" for="title">Название</label>
-          <input type="text" id="title" placeholder="Например: План главы 2" />
+          <input type="text" id="title" placeholder="Например: План главы 2" maxlength="100" />
 
           <label class="field-label" for="content">Текст заметки</label>
           <textarea id="content" placeholder="Введите текст заметки..."></textarea>
@@ -73,11 +63,22 @@
           <div class="two-columns form-gap">
             <div>
               <label class="field-label" for="priority">Приоритет</label>
-              <select id="priority">
+              <select id="priority" hidden>
                 <option value="Низкий">Низкий</option>
                 <option value="Средний">Средний</option>
                 <option value="Высокий">Высокий</option>
               </select>
+              <div class="custom-select" data-for="priority">
+                <button class="custom-select-btn" type="button">
+                  <span class="custom-select-label">Низкий</span>
+                  <svg class="custom-select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <ul class="custom-select-dropdown">
+                  <li data-value="Низкий">Низкий</li>
+                  <li data-value="Средний">Средний</li>
+                  <li data-value="Высокий">Высокий</li>
+                </ul>
+              </div>
             </div>
             <div>
               <label class="field-label" for="manualTags">Свои теги</label>
@@ -112,24 +113,46 @@
           <div class="toolbar-grid">
             <input type="text" id="searchInput" placeholder="Поиск по заметкам" />
 
-            <select id="sortSelect">
+            <select id="sortSelect" hidden>
               <option value="new">Сначала новые</option>
               <option value="old">Сначала старые</option>
               <option value="priority">По приоритету</option>
               <option value="words">По словам</option>
             </select>
+            <div class="custom-select" data-for="sortSelect">
+              <button class="custom-select-btn" type="button">
+                <span class="custom-select-label">Сначала новые</span>
+                <svg class="custom-select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <ul class="custom-select-dropdown">
+                <li data-value="new">Сначала новые</li>
+                <li data-value="old">Сначала старые</li>
+                <li data-value="priority">По приоритету</li>
+                <li data-value="words">По словам</li>
+              </ul>
+            </div>
 
-            <select id="filterPriority">
+            <select id="filterPriority" hidden>
               <option value="Все">Все приоритеты</option>
               <option value="Высокий">Высокий</option>
               <option value="Средний">Средний</option>
               <option value="Низкий">Низкий</option>
             </select>
+            <div class="custom-select" data-for="filterPriority">
+              <button class="custom-select-btn" type="button">
+                <span class="custom-select-label">Все приоритеты</span>
+                <svg class="custom-select-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <ul class="custom-select-dropdown">
+                <li data-value="Все">Все приоритеты</li>
+                <li data-value="Высокий">Высокий</li>
+                <li data-value="Средний">Средний</li>
+                <li data-value="Низкий">Низкий</li>
+              </ul>
+            </div>
           </div>
 
           <div class="action-row export-row">
-            <button class="btn btn-secondary" id="exportJsonBtn" type="button">Экспорт JSON</button>
-            <button class="btn btn-secondary" id="exportTxtBtn" type="button">Экспорт TXT</button>
             <button class="btn btn-danger" id="clearAllBtn" type="button">Удалить все</button>
           </div>
         </div>
