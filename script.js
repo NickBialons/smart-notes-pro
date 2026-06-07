@@ -139,6 +139,7 @@ function getAuthErrorMessage(error) {
 
 function setupAppPage() {
   protectAppPage();
+  initCustomSelects();
 
   ['#title', '#content', '#manualTags'].forEach((selector) =>
     $(selector).addEventListener('input', () => updateLiveStats($('#content')?.value || ''))
@@ -147,8 +148,6 @@ function setupAppPage() {
   $('#analyzeBtn').onclick = runManualAnalysis;
   $('#saveBtn').onclick = saveNote;
   $('#clearBtn').onclick = clearForm;
-  $('#exportJsonBtn').onclick = exportJson;
-  $('#exportTxtBtn').onclick = exportTxt;
 
   $('#searchInput').addEventListener('input', renderNotes);
   $('#sortSelect').onchange = renderNotes;
@@ -175,6 +174,47 @@ function setupAppPage() {
   updateDashboardStats();
 }
 
+
+function initCustomSelects() {
+  document.querySelectorAll(".custom-select").forEach(wrapper => {
+    const targetId = wrapper.dataset.for;
+    const nativeSelect = document.getElementById(targetId);
+    const btn = wrapper.querySelector(".custom-select-btn");
+    const label = wrapper.querySelector(".custom-select-label");
+    const items = wrapper.querySelectorAll("li");
+
+    const syncLabel = () => {
+      label.textContent = nativeSelect.options[nativeSelect.selectedIndex]?.text || "";
+      items.forEach(li => {
+        li.classList.toggle("selected", li.dataset.value === nativeSelect.value);
+      });
+    };
+
+    syncLabel();
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const isOpen = wrapper.classList.contains("open");
+      document.querySelectorAll(".custom-select.open").forEach(el => el.classList.remove("open"));
+      if (!isOpen) wrapper.classList.add("open");
+    });
+
+    items.forEach(li => {
+      li.addEventListener("click", () => {
+        nativeSelect.value = li.dataset.value;
+        nativeSelect.dispatchEvent(new Event("change"));
+        syncLabel();
+        wrapper.classList.remove("open");
+      });
+    });
+
+    nativeSelect.addEventListener("change", syncLabel);
+  });
+
+  document.addEventListener("click", () => {
+    document.querySelectorAll(".custom-select.open").forEach(el => el.classList.remove("open"));
+  });
+}
 function protectAppPage() {
   const guestMode = localStorage.getItem(GUEST_KEY) === 'true';
 
@@ -561,8 +601,9 @@ function noteCard(note) {
         <div class="tags-wrap">${note.tags.map(tag => `<span class="tag tag-autotag">${escapeHtml(tag)}</span>`).join('')}</div>
       </div>` : ''}
 
-      <div class="note-actions">
+      <div class="note-actions note-actions-3">
         <button class="btn btn-secondary" onclick="editNote(${note.id})">Редактировать</button>
+        <button class="btn btn-secondary" onclick="exportNoteTxt(${note.id})">Экспорт TXT</button>
         <button class="btn btn-danger" onclick="openDeleteNote(${note.id})">Удалить</button>
       </div>
     </article>
@@ -685,6 +726,18 @@ function editNote(id) {
   updateLiveAnalysis();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+function exportNoteTxt(id) {
+  const note = notes.find(item => item.id === id);
+  if (!note) return;
+
+  const text = `${note.title}\n\n${note.content}`;
+
+  const safeName = note.title.replace(/[^a-zа-яё0-9\s]/gi, '').trim().replace(/\s+/g, '-') || 'note';
+  downloadFile(text, `${safeName}.txt`, 'text/plain;charset=utf-8');
+}
+
+window.exportNoteTxt = exportNoteTxt;
 
 window.editNote = editNote;
 window.openDeleteNote = openDeleteNote;
