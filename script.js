@@ -33,7 +33,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const GUEST_STORAGE_KEY = 'smart_notes_guest_notes';
-const THEME_KEY = 'smart_notes_theme';
 const GUEST_KEY = 'guest_mode';
 
 const $ = (selector) => document.querySelector(selector);
@@ -42,15 +41,6 @@ const isLoginPage = () =>
   location.pathname.toLowerCase().includes('login') ||
   !!document.querySelector('#loginBtn');
 
-const stopWords = new Set([
-  'и','в','во','не','что','он','на','я','с','со','как','а','то','все','она','так','его','но','да','ты','к','у','же',
-  'вы','за','бы','по','только','ее','мне','было','вот','от','меня','еще','нет','о','из','ему','теперь','когда','даже',
-  'ну','вдруг','ли','если','или','ни','быть','был','него','до','вас','опять','уж','вам','ведь','там','потом','себя',
-  'ничего','ей','может','они','тут','где','есть','надо','ней','для','мы','тебя','их','чем','была','сам','чтоб','без',
-  'будто','чего','раз','тоже','себе','под','будет','ж','тогда','кто','этот','того','потому','этого','какой','совсем',
-  'ним','здесь','этом','один','почти','мой','тем','чтобы','нее','сейчас','были','куда','зачем','всех','никогда','можно',
-  'при','наконец','два','об','другой','хоть','после','над','больше','тот','через','эти','нас','про','всего','них'
-]);
 
 let notes = [];
 let currentUser = null;
@@ -59,30 +49,10 @@ let aiDebounceTimer = null;
 let lastAiResult = { summary: '', keywords: [], allTags: [] };
 
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
   initConfirmModal();
   isLoginPage() ? setupLoginPage() : setupAppPage();
 });
 
-function initTheme() {
-  if (localStorage.getItem(THEME_KEY) === 'light') {
-    document.body.classList.add('light');
-  }
-  const toggle = $('#themeToggle');
-  if (!toggle) return;
-
-  const updateIcon = () => {
-    toggle.textContent = document.body.classList.contains('light') ? '☀️' : '🌙';
-  };
-
-  toggle.addEventListener('click', () => {
-    document.body.classList.toggle('light');
-    localStorage.setItem(THEME_KEY, document.body.classList.contains('light') ? 'light' : 'dark');
-    updateIcon();
-  });
-
-  updateIcon();
-}
 
 function setupLoginPage() {
   const email = $('#email');
@@ -172,6 +142,7 @@ function setupAppPage() {
   setAnalysisIdle();
   renderNotes();
   updateDashboardStats();
+  updateLiveStats('');
 }
 
 
@@ -359,15 +330,6 @@ function setAnalysisLoading() {
   `;
 }
 
-function setAnalysisEmpty() {
-  const el = $('#analysisResult');
-  if (!el) return;
-  el.innerHTML = `
-    <div class="analysis-box analysis-idle">
-      <p>Напиши заметку и нажми <strong>✨ Анализировать ИИ</strong>, чтобы получить резюме, ключевые слова и теги.</p>
-    </div>
-  `;
-}
 
 function renderTags(list, fallback) {
   return list.length
@@ -450,58 +412,6 @@ async function runManualAnalysis() {
   }
 }
 
-async function updateLiveAnalysis() {
-  const text = $('#content')?.value || '';
-  const manualTags = $('#manualTags')?.value || '';
-  updateLiveStats(text);
-
-  if (!text.trim() || text.trim().length < 20) {
-    setAnalysisEmpty();
-    lastAiResult = { summary: '', keywords: [], allTags: [] };
-    return;
-  }
-
-  clearTimeout(aiDebounceTimer);
-  setAnalysisLoading();
-
-  aiDebounceTimer = setTimeout(async () => {
-    try {
-      const ai = await fetchAiAnalysis(text, manualTags);
-      const customTags = manualTags
-        ? manualTags.split(',').map(t => t.trim()).filter(Boolean)
-        : [];
-      const allTags = [...new Set([...(ai.tags || []), ...customTags])];
-
-      lastAiResult = {
-        summary: ai.summary || '',
-        keywords: ai.keywords || [],
-        allTags
-      };
-
-      $('#analysisResult').innerHTML = `
-        <div class="analysis-box">
-          <h3>Краткое резюме</h3>
-          <p>${escapeHtml(ai.summary || 'Нет результата')}</p>
-        </div>
-        <div class="analysis-box">
-          <h3>Ключевые слова</h3>
-          <p>${renderTags(ai.keywords || [], 'Нет ключевых слов')}</p>
-        </div>
-        <div class="analysis-box">
-          <h3>Автотеги</h3>
-          <p>${renderTags(allTags, 'Нет тегов')}</p>
-        </div>
-      `;
-    } catch {
-      $('#analysisResult').innerHTML = `
-        <div class="analysis-box" style="border-color:rgba(239,68,68,0.3)">
-          <h3>Ошибка AI</h3>
-          <p>Анализ временно недоступен, но заметку можно сохранить.</p>
-        </div>
-      `;
-    }
-  }, 1200);
-}
 
 async function saveNote() {
   const title = $('#title').value.trim();
@@ -665,7 +575,7 @@ function clearForm() {
     if (el) el.value = '';
   });
   $('#priority').value = 'Низкий';
-  updateLiveAnalysis();
+  updateLiveStats('');
 }
 
 function updateDashboardStats() {
@@ -673,20 +583,7 @@ function updateDashboardStats() {
   $('#totalWords').textContent = notes.reduce((sum, note) => sum + (note.stats?.words || 0), 0);
 }
 
-function exportJson() {
-  if (!notes.length) return alert('Нет заметок.');
-  downloadFile(JSON.stringify(notes, null, 2), 'smart-notes-export.json', 'application/json');
-}
 
-function exportTxt() {
-  if (!notes.length) return alert('Нет заметок.');
-
-  const text = notes.map((note, index) => {
-    return `${index + 1}. ${note.title}\n${note.priority}\n${note.createdAt}\n${note.updatedAt}\n\n${(note.keywordList || []).join(', ')}\n${(note.tags || []).join(', ')}\n\n${note.summary || ''}\n\n${note.content}`;
-  }).join('\n\n------------------------------------------------------------\n\n');
-
-  downloadFile(text, 'smart-notes-export.txt', 'text/plain;charset=utf-8');
-}
 
 function downloadFile(content, name, type) {
   const blob = new Blob([content], { type });
@@ -726,7 +623,6 @@ function editNote(id) {
   $('#priority').value = note.priority || 'low';
   $('#manualTags').value = (note.tags || []).join(', ');
   $('#editId').value = note.id;
-  updateLiveAnalysis();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
